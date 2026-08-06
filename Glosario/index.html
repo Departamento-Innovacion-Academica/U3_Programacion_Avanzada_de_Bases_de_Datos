@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glosario de Integración y Bases de Datos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        /* --- VARIABLES DE COLOR --- */
+        :root {
+            --primary-brand: #483C9A;
+            --bg-light: #ececec;
+            --text-dark: #333333;
+            --white: #ffffff;
+            --disabled-gray: #a0a0a0;
+            --disabled-bg: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: radial-gradient(#d0d0d0 1px, transparent 1px);
+            background-size: 10px 10px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .glossary-widget {
+            width: 100%;
+            max-width: 900px;
+            background: transparent;
+            position: relative;
+        }
+
+        .instruction-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .instruction-badge {
+            background-color: var(--primary-brand);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse-attention 2s infinite;
+        }
+
+        @keyframes pulse-attention {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(72, 60, 154, 0.4);
+            }
+
+            70% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 10px rgba(72, 60, 154, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(72, 60, 154, 0);
+            }
+        }
+
+        .glossary-header {
+            background-color: var(--primary-brand);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .glossary-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .glossary-body {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .tabs-container {
+            display: flex;
+            flex-direction: column;
+            width: 140px;
+            flex-shrink: 0;
+            background-color: var(--primary-brand);
+            border-radius: 15px;
+            padding: 10px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--white);
+            border: none;
+            padding: 15px 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            outline: none;
+            position: relative;
+        }
+
+        .tab-btn:hover:not(.disabled) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn.active {
+            background-color: var(--bg-light);
+            color: var(--primary-brand);
+            border-radius: 5px 0 0 5px;
+        }
+
+        .tab-btn.disabled {
+            color: var(--disabled-gray);
+            background-color: rgba(0, 0, 0, 0.15);
+            cursor: not-allowed;
+        }
+
+        .content-area {
+            flex-grow: 1;
+            background-color: var(--bg-light);
+            border-radius: 15px;
+            padding: 40px;
+            min-height: 450px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-item {
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 5px solid var(--primary-brand);
+        }
+
+        .definition-item h3 {
+            color: var(--primary-brand);
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .definition-item p {
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            text-align: left;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-group.animate-in .definition-item {
+            animation: slideUpFade 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .content-group.animate-in .definition-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .content-group.animate-in .definition-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .content-group.animate-in .definition-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .content-group.animate-in .definition-item:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .content-group.animate-in .definition-item:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .content-group.animate-in .definition-item:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        @media (max-width: 768px) {
+            .glossary-body {
+                flex-direction: column;
+            }
+
+            .tabs-container {
+                width: 100%;
+                flex-direction: row;
+                position: static;
+            }
+
+            .tab-btn {
+                flex: 1;
+                border-bottom: none;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+                font-size: 0.9rem;
+            }
+
+            .tab-btn.active {
+                border-radius: 10px 10px 0 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="glossary-widget">
+        <div class="instruction-wrapper">
+            <div class="instruction-badge">
+                <span>👆</span> Haga Clic sobre los botones para ampliar la información
+            </div>
+        </div>
+
+        <div class="glossary-header">
+            <h1>Glosario de Integración y Bases de Datos</h1>
+        </div>
+
+        <div class="glossary-body">
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="filterContent('A-I', this)">A – I</button>
+                <button class="tab-btn" onclick="filterContent('J-R', this)">J – R</button>
+                <button class="tab-btn" onclick="filterContent('S-Z', this)">S – Z</button>
+            </div>
+
+            <div class="content-area">
+                <!-- Grupo A – I -->
+                <div class="content-group animate-in" id="group-A-I">
+                    <div class="definition-item">
+                        <h3>API (Application Programming Interface)</h3>
+                        <p>Conjunto de reglas y mecanismos que permiten que diferentes aplicaciones se comuniquen entre
+                            sí. En el contexto de bases de datos, una API puede permitir que una aplicación consulte,
+                            inserte o modifique información almacenada en un sistema gestor de bases de datos.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>Base de datos relacional</h3>
+                        <p>Sistema organizado de almacenamiento de información que estructura los datos en tablas
+                            relacionadas entre sí. Estas bases de datos utilizan el lenguaje SQL para consultar y
+                            manipular la información.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>Conexión a base de datos</h3>
+                        <p>Proceso mediante el cual una aplicación establece comunicación con un sistema gestor de bases
+                            de datos para ejecutar consultas, recuperar información o realizar operaciones sobre los
+                            datos.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>Driver de base de datos</h3>
+                        <p>Componente de software que permite que un lenguaje de programación o una aplicación se
+                            conecte a un sistema gestor de bases de datos específico. Los drivers facilitan la
+                            comunicación entre el programa y el motor de base de datos.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>Endpoint</h3>
+                        <p>Punto de acceso dentro de una API que permite a una aplicación solicitar o enviar
+                            información. Cada endpoint corresponde normalmente a una operación específica sobre los
+                            datos, como consultar, crear o actualizar registros.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>Integración de sistemas</h3>
+                        <p>Proceso mediante el cual diferentes aplicaciones o plataformas intercambian información para
+                            trabajar de manera conjunta. En muchos casos, esta integración se realiza mediante APIs que
+                            permiten acceder a datos almacenados en bases de datos.</p>
+                    </div>
+                </div>
+
+                <!-- Grupo J – R -->
+                <div class="content-group hidden" id="group-J-R">
+
+                    <div class="definition-item">
+                        <h3>JSON (JavaScript Object Notation)</h3>
+                        <p>Formato de intercambio de datos ampliamente utilizado en aplicaciones web y APIs. Permite
+                            representar información de manera estructurada y fácilmente interpretable por diferentes
+                            sistemas.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>REST (Representational State Transfer)</h3>
+                        <p>Estilo de arquitectura utilizado para diseñar APIs que permiten la comunicación entre
+                            aplicaciones a través de internet. Las APIs REST suelen utilizar el protocolo HTTP para
+                            enviar y recibir información.</p>
+                    </div>
+                </div>
+
+                <!-- Grupo S – Z -->
+                <div class="content-group hidden" id="group-S-Z">
+                    <div class="definition-item">
+                        <h3>Servicio web</h3>
+                        <p>Aplicación o componente de software que permite el intercambio de información entre sistemas
+                            a través de una red, generalmente utilizando protocolos estándar como HTTP.</p>
+                    </div>
+                    <div class="definition-item">
+                        <h3>SQL (Structured Query Language)</h3>
+                        <p>Lenguaje utilizado para consultar, insertar, actualizar y eliminar información dentro de
+                            bases de datos relacionales. Es el principal medio de interacción entre las aplicaciones y
+                            el sistema gestor de bases de datos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterContent(groupId, btnElement) {
+            if (btnElement.classList.contains('disabled')) return;
+
+            const groups = document.querySelectorAll('.content-group');
+            groups.forEach(group => {
+                group.classList.add('hidden');
+                group.classList.remove('animate-in');
+            });
+
+            const selectedGroup = document.getElementById('group-' + groupId);
+            if (selectedGroup) {
+                selectedGroup.classList.remove('hidden');
+                void selectedGroup.offsetWidth;
+                selectedGroup.classList.add('animate-in');
+            }
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+    </script>
+
+</body>
+
+</html>
