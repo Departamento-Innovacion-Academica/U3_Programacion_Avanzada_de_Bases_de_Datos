@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Efecto Typing Node.js - JWT Verify Middleware</title>
+  <style>
+    /* Estilos generales */
+    body {
+      background-color: #121214;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+    }
+
+    /* Ventana tipo terminal */
+    .code-window {
+      background-color: #1e1e24;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 680px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Barra superior de la ventana */
+    .window-header {
+      background-color: #18181c;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-circle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .close { background-color: #ff5f56; }
+    .minimize { background-color: #ffbd2e; }
+    .maximize { background-color: #27c93f; }
+
+    .window-title {
+      color: #7a7a8c;
+      font-size: 13px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Área donde se escribe el código */
+    .code-body {
+      padding: 28px 32px;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+
+    /* Colores del Syntax Highlighting estilo JWT Middleware */
+    .keyword { color: #ff5555; font-weight: bold; }       /* const, function, return */
+    .kw-orange { color: #ff9e3b; font-weight: bold; }     /* require, if, next */
+    .fn-name { color: #ff9e3b; }                           /* verificarToken */
+    .property { color: #2e7cd6; }                          /* headers, status, send, verify, usuario */
+    .string { color: #2e7cd6; }                            /* "jsonwebtoken", "authorization", etc. */
+    .number { color: #2e7cd6; }                            /* 403, 401 */
+
+    /* Cursor parpadeante fino (estilo editor) */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 18px;
+      background-color: #ffffff;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="code-window">
+    <div class="window-header">
+      <span class="btn-circle close"></span>
+      <span class="btn-circle minimize"></span>
+      <span class="btn-circle maximize"></span>
+      <span class="window-title">verificarToken.js</span>
+    </div>
+    <div class="code-body"><span id="code-content"></span><span class="cursor"></span></div>
+  </div>
+
+  <script>
+    // Configuración de tokens para verificarToken.js
+    const tokens = [
+      { text: "const", class: "keyword" },
+      { text: " jwt = " },
+      { text: "require", class: "kw-orange" },
+      { text: "(" },
+      { text: '"jsonwebtoken"', class: "string" },
+      { text: ")\n\n" },
+      { text: "function", class: "keyword" },
+      { text: " " },
+      { text: "verificarToken", class: "fn-name" },
+      { text: "(req, res, next){\n  " },
+      { text: "const", class: "keyword" },
+      { text: " token = req." },
+      { text: "headers", class: "property" },
+      { text: "[" },
+      { text: '"authorization"', class: "string" },
+      { text: "]\n  " },
+      { text: "if", class: "kw-orange" },
+      { text: "(!token){\n    " },
+      { text: "return", class: "keyword" },
+      { text: " res." },
+      { text: "status", class: "property" },
+      { text: "(" },
+      { text: "403", class: "number" },
+      { text: ")." },
+      { text: "send", class: "property" },
+      { text: "(" },
+      { text: '"Token requerido"', class: "string" },
+      { text: ")\n  }\n  jwt." },
+      { text: "verify", class: "property" },
+      { text: "(token, " },
+      { text: '"clave_secreta"', class: "string" },
+      { text: ", (err, decoded) => {\n    " },
+      { text: "if", class: "kw-orange" },
+      { text: "(err){\n      " },
+      { text: "return", class: "keyword" },
+      { text: " res." },
+      { text: "status", class: "property" },
+      { text: "(" },
+      { text: "401", class: "number" },
+      { text: ")." },
+      { text: "send", class: "property" },
+      { text: "(" },
+      { text: '"Token inválido"', class: "string" },
+      { text: ")\n    }\n    req." },
+      { text: "usuario", class: "property" },
+      { text: " = decoded\n    " },
+      { text: "next", class: "kw-orange" },
+      { text: "()\n  })\n}" }
+    ];
+
+    const container = document.getElementById("code-content");
+    let tokenIndex = 0;
+    let charIndex = 0;
+    let currentElement = null;
+
+    function typeCode() {
+      if (tokenIndex < tokens.length) {
+        const currentToken = tokens[tokenIndex];
+
+        // Crear elemento para el nuevo token
+        if (charIndex === 0) {
+          if (currentToken.class) {
+            currentElement = document.createElement("span");
+            currentElement.className = currentToken.class;
+            container.appendChild(currentElement);
+          } else {
+            currentElement = document.createTextNode("");
+            container.appendChild(currentElement);
+          }
+        }
+
+        // Agregar carácter actual
+        const char = currentToken.text.charAt(charIndex);
+        if (currentToken.class) {
+          currentElement.textContent += char;
+        } else {
+          currentElement.nodeValue += char;
+        }
+
+        charIndex++;
+
+        // Pasar al siguiente token cuando se complete
+        if (charIndex === currentToken.text.length) {
+          charIndex = 0;
+          tokenIndex++;
+        }
+
+        // Velocidad de escritura (35ms)
+        setTimeout(typeCode, 35);
+      }
+    }
+
+    // Iniciar animación tras un breve retraso
+    setTimeout(typeCode, 500);
+  </script>
+
+</body>
+</html>
