@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo de Asignación de Roles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction-text {
+      color: #334155;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Botón ▶ Reiniciar */
+    .restart-btn {
+      background-color: #334155;
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(51, 65, 85, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #1e293b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(51, 65, 85, 0.25);
+    }
+
+    .restart-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Contenedor Vertical principal */
+    .flow-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* Tarjetas gris claro estilo degradado suave */
+    .light-card {
+      background: linear-gradient(180deg, #d8dcdb 0%, #b8bcbb 100%);
+      border-radius: 28px;
+      width: 100%;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 24px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 110px;
+    }
+
+    .light-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Contenedor del Icono */
+    .icon-container {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Texto dentro de la tarjeta */
+    .card-title {
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: #2b2b2b;
+      letter-spacing: -0.5px;
+    }
+
+    /* Flechas descentes grises */
+    .arrow-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: -2px 0;
+    }
+
+    .arrow-svg {
+      width: 32px;
+      height: 28px;
+      fill: #a0a5a4;
+    }
+
+    /* Animación de entrada descendente */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animated {
+      opacity: 0;
+      animation: fadeInDown 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* Delays para efecto cascada */
+    .d-1 { animation-delay: 0.10s; }
+    .d-2 { animation-delay: 0.25s; }
+    .d-3 { animation-delay: 0.40s; }
+    .d-4 { animation-delay: 0.55s; }
+    .d-5 { animation-delay: 0.70s; }
+    .d-6 { animation-delay: 0.85s; }
+    .d-7 { animation-delay: 1.00s; }
+
+    /* Adaptabilidad Móvil */
+    @media (max-width: 480px) {
+      .card-title {
+        font-size: 24px;
+      }
+      .icon-container {
+        width: 56px;
+        height: 56px;
+      }
+      .light-card {
+        padding: 15px 20px;
+        min-height: 90px;
+        gap: 16px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción -->
+  <p class="instruction-text">Haga clic sobre el botón "▶ Reiniciar" para reiniciar la animación</p>
+
+  <!-- Botón ▶ Reiniciar -->
+  <button class="restart-btn" onclick="restartAnimation()">
+    ▶ Reiniciar
+  </button>
+
+  <div class="flow-vertical" id="flowWrapper">
+
+    <!-- Tarjeta 1: Usuario -->
+    <div class="light-card animated d-1">
+      <div class="icon-container">
+        <!-- Icono Usuario/Perfil -->
+        <svg class="icon-svg" viewBox="0 0 100 100">
+          <!-- Cabello -->
+          <path d="M 32 30 C 32 15, 68 15, 68 30 L 68 38 L 32 38 Z" fill="#6c534e" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M 32 30 C 32 15, 68 15, 68 30 L 68 22 C 68 15, 32 15, 32 22 Z" fill="#4a3734"/>
+          <!-- Cara -->
+          <path d="M 36 32 L 64 32 L 64 50 C 64 58, 56 64, 50 64 C 44 64, 36 58, 36 50 Z" fill="#fde0c2" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="50" cy="46" r="2.5" fill="#2b2b2b"/>
+          <!-- Orejas -->
+          <circle cx="34" cy="44" r="4" fill="#fde0c2" stroke="#2b2b2b" stroke-width="3"/>
+          <circle cx="66" cy="44" r="4" fill="#fde0c2" stroke="#2b2b2b" stroke-width="3"/>
+          <!-- Cuello -->
+          <rect x="45" y="62" width="10" height="8" fill="#fde0c2" stroke="#2b2b2b" stroke-width="3"/>
+          <!-- Traje y Corbata -->
+          <path d="M 26 88 L 36 68 L 64 68 L 74 88 Z" fill="#474747" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="42,68 50,88 58,68" fill="#ffffff"/>
+          <polygon points="47,68 50,72 53,68" fill="#eab308"/>
+          <polygon points="50,72 54,85 50,88 46,85" fill="#f97316" stroke="#2b2b2b" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-title">Usuario</div>
+    </div>
+
+    <!-- Flecha 1 -->
+    <div class="arrow-container animated d-2">
+      <svg class="arrow-svg" viewBox="0 0 24 24">
+        <path d="M12 21l-8-9h5V3h6v9h5z"/>
+      </svg>
+    </div>
+
+    <!-- Tarjeta 2: Rol asignado -->
+    <div class="light-card animated d-3">
+      <div class="icon-container">
+        <!-- Icono Llave con Estrella -->
+        <svg class="icon-svg" viewBox="0 0 100 100">
+          <!-- Llave azul -->
+          <g transform="rotate(-35 50 50)">
+            <circle cx="68" cy="35" r="16" fill="#38bdf8" stroke="#2b2b2b" stroke-width="3.5"/>
+            <circle cx="68" cy="35" r="6" fill="#ffffff" stroke="#2b2b2b" stroke-width="3"/>
+            <path d="M 54 35 L 18 35 L 18 45 L 25 45 L 25 38 L 32 38 L 32 48 L 40 48 L 40 35" fill="#38bdf8" stroke="#2b2b2b" stroke-width="3.5" stroke-linejoin="round"/>
+          </g>
+          <!-- Estrella amarilla -->
+          <polygon points="58,60 62,70 73,70 64,77 67,88 58,81 49,88 52,77 43,70 54,70" fill="#facc15" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="card-title">Rol<br>asignado</div>
+    </div>
+
+    <!-- Flecha 2 -->
+    <div class="arrow-container animated d-4">
+      <svg class="arrow-svg" viewBox="0 0 24 24">
+        <path d="M12 21l-8-9h5V3h6v9h5z"/>
+      </svg>
+    </div>
+
+    <!-- Tarjeta 3: Permisos del rol -->
+    <div class="light-card animated d-5">
+      <div class="icon-container">
+        <!-- Icono Matriz de Permisos / Reglas -->
+        <svg class="icon-svg" viewBox="0 0 100 100">
+          <!-- Marco Principal -->
+          <rect x="22" y="18" width="38" height="64" rx="4" fill="#f87171" stroke="#2b2b2b" stroke-width="3"/>
+          <line x1="22" y1="39" x2="60" y2="39" stroke="#2b2b2b" stroke-width="3"/>
+          <line x1="22" y1="60" x2="60" y2="60" stroke="#2b2b2b" stroke-width="3"/>
+          <!-- Filas con fondos de color -->
+          <rect x="23" y="19" width="36" height="19" fill="#fef08a" rx="2"/>
+          <rect x="23" y="40" width="36" height="19" fill="#a7f3d0" rx="2"/>
+          <rect x="23" y="61" width="36" height="20" fill="#fca5a5" rx="2"/>
+          
+          <!-- Símbolos de la izquierda -->
+          <!-- Fila 1: Usuario -->
+          <circle cx="33" cy="26" r="3" fill="#2b2b2b"/>
+          <path d="M 28 35 C 28 30, 38 30, 38 35" stroke="#2b2b2b" stroke-width="2" fill="none"/>
+          <line x1="42" y1="29" x2="52" y2="29" stroke="#2b2b2b" stroke-width="3"/>
+
+          <!-- Fila 2: Escudo -->
+          <path d="M 33 44 L 38 44 L 38 51 C 38 54, 33 56, 33 56 C 33 56, 28 54, 28 51 L 28 44 Z" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+          <line x1="42" y1="50" x2="52" y2="50" stroke="#2b2b2b" stroke-width="3"/>
+
+          <!-- Fila 3: Interrogación -->
+          <text x="29" y="77" font-size="14" font-weight="bold" fill="#2b2b2b">?</text>
+          <line x1="42" y1="71" x2="52" y2="71" stroke="#2b2b2b" stroke-width="3"/>
+
+          <!-- Iconos de estado a la derecha -->
+          <!-- Triángulo de Advertencia -->
+          <polygon points="72,20 63,35 81,35" fill="#facc15" stroke="#2b2b2b" stroke-width="2.5" stroke-linejoin="round"/>
+          <text x="70.5" y="32" font-size="11" font-weight="bold" fill="#2b2b2b">!</text>
+
+          <!-- Check Verde -->
+          <circle cx="72" cy="50" r="9" fill="#34d399" stroke="#2b2b2b" stroke-width="2.5"/>
+          <path d="M 67 50 L 70 53 L 77 46" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Prohibido Rojo -->
+          <circle cx="72" cy="71" r="9" fill="#f87171" stroke="#2b2b2b" stroke-width="2.5"/>
+          <line x1="66" y1="77" x2="78" y2="65" stroke="#2b2b2b" stroke-width="2.5"/>
+        </svg>
+      </div>
+      <div class="card-title">Permisos<br>del rol</div>
+    </div>
+
+    <!-- Flecha 3 -->
+    <div class="arrow-container animated d-6">
+      <svg class="arrow-svg" viewBox="0 0 24 24">
+        <path d="M12 21l-8-9h5V3h6v9h5z"/>
+      </svg>
+    </div>
+
+    <!-- Tarjeta 4: Acceso a recursos -->
+    <div class="light-card animated d-7">
+      <div class="icon-container">
+        <!-- Icono Pantalla / Reproductor + Dispositivo/Carpeta -->
+        <svg class="icon-svg" viewBox="0 0 100 100">
+          <!-- Monitor/Pantalla -->
+          <rect x="18" y="22" width="56" height="42" rx="4" fill="#e0f2fe" stroke="#2b2b2b" stroke-width="3.5"/>
+          <path d="M 18 22 L 74 22 L 74 30 L 18 30 Z" fill="#38bdf8" stroke="#2b2b2b" stroke-width="3"/>
+          <!-- Base monitor -->
+          <path d="M 38 64 L 34 72 L 58 72 L 54 64" fill="#2b2b2b"/>
+          <line x1="26" y1="72" x2="66" y2="72" stroke="#2b2b2b" stroke-width="3.5" stroke-linecap="round"/>
+
+          <!-- Elementos dentro de la pantalla -->
+          <rect x="25" y="36" width="24" height="20" rx="2" fill="#2b2b2b"/>
+          <polygon points="33,41 42,46 33,51" fill="#ef4444"/>
+          
+          <rect x="54" y="36" width="12" height="4" fill="#ef4444"/>
+          <rect x="54" y="44" width="12" height="4" fill="#ef4444"/>
+          <rect x="54" y="52" width="12" height="4" fill="#ef4444"/>
+
+          <!-- Dispositivo/Carpeta parda superpuesta abajo a la derecha -->
+          <rect x="52" y="54" width="28" height="30" rx="3" fill="#855223" stroke="#2b2b2b" stroke-width="3"/>
+          <rect x="60" y="60" width="12" height="8" rx="1" fill="#15803d" stroke="#2b2b2b" stroke-width="2"/>
+          <rect x="60" y="72" width="12" height="8" rx="1" fill="#15803d" stroke="#2b2b2b" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-title">Acceso a<br>recursos</div>
+    </div>
+
+  </div>
+
+  <script>
+    function restartAnimation() {
+      const wrapper = document.getElementById('flowWrapper');
+      const clone = wrapper.cloneNode(true);
+      wrapper.parentNode.replaceChild(clone, wrapper);
+    }
+  </script>
+
+</body>
+</html>
