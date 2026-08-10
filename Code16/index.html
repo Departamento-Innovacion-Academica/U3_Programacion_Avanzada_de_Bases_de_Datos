@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Efecto Typing Node.js - Express CRUD API</title>
+  <style>
+    /* Estilos generales */
+    body {
+      background-color: #121214;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+    }
+
+    /* Ventana tipo terminal */
+    .code-window {
+      background-color: #1e1e24;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 680px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Barra superior de la ventana */
+    .window-header {
+      background-color: #18181c;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-circle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .close { background-color: #ff5f56; }
+    .minimize { background-color: #ffbd2e; }
+    .maximize { background-color: #27c93f; }
+
+    .window-title {
+      color: #7a7a8c;
+      font-size: 13px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Área donde se escribe el código */
+    .code-body {
+      padding: 28px 32px;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+
+    /* Colores del Syntax Highlighting estilo Express.js */
+    .keyword { color: #ff5555; font-weight: bold; }   /* const, let */
+    .function-kw { color: #ff5555; }                   /* require */
+    .method { color: #9a66ff; }                        /* express, use, json, get, post, push, put, delete, splice, listen */
+    .property { color: #2e7cd6; }                      /* mensaje */
+    .string { color: #2e7cd6; }                        /* 'express', '/empleados', "Empleado...", etc. */
+    .number { color: #2e7cd6; }                        /* 1, 3000 */
+
+    /* Cursor parpadeante fino (estilo editor) */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 18px;
+      background-color: #ffffff;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="code-window">
+    <div class="window-header">
+      <span class="btn-circle close"></span>
+      <span class="btn-circle minimize"></span>
+      <span class="btn-circle maximize"></span>
+      <span class="window-title">express_crud_api.js</span>
+    </div>
+    <div class="code-body"><span id="code-content"></span><span class="cursor"></span></div>
+  </div>
+
+  <script>
+    // Configuración de tokens para express_crud_api
+    const tokens = [
+      { text: "const", class: "keyword" },
+      { text: " express = " },
+      { text: "require", class: "function-kw" },
+      { text: "(" },
+      { text: "'express'", class: "string" },
+      { text: ")\n" },
+      { text: "const", class: "keyword" },
+      { text: " app = " },
+      { text: "express", class: "method" },
+      { text: "()\napp." },
+      { text: "use", class: "method" },
+      { text: "(express." },
+      { text: "json", class: "method" },
+      { text: "())\n\n" },
+      { text: "let", class: "keyword" },
+      { text: " empleados = []\n\napp." },
+      { text: "get", class: "method" },
+      { text: "(" },
+      { text: "'/empleados'", class: "string" },
+      { text: ", (req, res) => {\n  res." },
+      { text: "json", class: "method" },
+      { text: "(empleados)\n})\n\napp." },
+      { text: "post", class: "method" },
+      { text: "(" },
+      { text: "'/empleados'", class: "string" },
+      { text: ", (req, res) => {\n  empleados." },
+      { text: "push", class: "method" },
+      { text: "(req.body)\n  res." },
+      { text: "json", class: "method" },
+      { text: "({\n    " },
+      { text: "mensaje", class: "property" },
+      { text: ": " },
+      { text: '"Empleado agregado"', class: "string" },
+      { text: "\n  })\n})\n\napp." },
+      { text: "put", class: "method" },
+      { text: "(" },
+      { text: "'/empleados/:id'", class: "string" },
+      { text: ", (req, res) => {\n  " },
+      { text: "const", class: "keyword" },
+      { text: " id = req.params.id\n  empleados[id] = req.body\n  res." },
+      { text: "json", class: "method" },
+      { text: "({\n    " },
+      { text: "mensaje", class: "property" },
+      { text: ": " },
+      { text: '"Empleado actualizado"', class: "string" },
+      { text: "\n  })\n})\n\napp." },
+      { text: "delete", class: "method" },
+      { text: "(" },
+      { text: "'/empleados/:id'", class: "string" },
+      { text: ", (req, res) => {\n  empleados." },
+      { text: "splice", class: "method" },
+      { text: "(req.params.id, " },
+      { text: "1", class: "number" },
+      { text: ")\n  res." },
+      { text: "json", class: "method" },
+      { text: "({\n    " },
+      { text: "mensaje", class: "property" },
+      { text: ": " },
+      { text: '"Empleado eliminado"', class: "string" },
+      { text: "\n  })\n})\n\napp." },
+      { text: "listen", class: "method" },
+      { text: "(" },
+      { text: "3000", class: "number" },
+      { text: ")" }
+    ];
+
+    const container = document.getElementById("code-content");
+    let tokenIndex = 0;
+    let charIndex = 0;
+    let currentElement = null;
+
+    function typeCode() {
+      if (tokenIndex < tokens.length) {
+        const currentToken = tokens[tokenIndex];
+
+        // Crear elemento para el nuevo token
+        if (charIndex === 0) {
+          if (currentToken.class) {
+            currentElement = document.createElement("span");
+            currentElement.className = currentToken.class;
+            container.appendChild(currentElement);
+          } else {
+            currentElement = document.createTextNode("");
+            container.appendChild(currentElement);
+          }
+        }
+
+        // Agregar carácter actual
+        const char = currentToken.text.charAt(charIndex);
+        if (currentToken.class) {
+          currentElement.textContent += char;
+        } else {
+          currentElement.nodeValue += char;
+        }
+
+        charIndex++;
+
+        // Pasar al siguiente token cuando se complete
+        if (charIndex === currentToken.text.length) {
+          charIndex = 0;
+          tokenIndex++;
+        }
+
+        // Velocidad de escritura (35ms)
+        setTimeout(typeCode, 35);
+      }
+    }
+
+    // Iniciar animación tras un breve retraso
+    setTimeout(typeCode, 500);
+  </script>
+
+</body>
+</html>
