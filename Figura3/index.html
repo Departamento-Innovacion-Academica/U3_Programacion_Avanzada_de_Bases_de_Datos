@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo de Consulta de Base de Datos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #e9ecef;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction-text {
+      color: #333333;
+      font-size: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Botón de reinicio */
+    .restart-btn {
+      background-color: #212832;
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #343a40;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .restart-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Contenedor del Diagrama */
+    .diagram-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      width: 320px;
+      margin: 0 auto;
+    }
+
+    /* Cajas principales */
+    .step-box {
+      background: #f8f9fa;
+      border: 1px solid #dcdcdc;
+      border-radius: 16px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px 0 25px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2b2b2b;
+      line-height: 1.2;
+      max-width: 160px;
+    }
+
+    /* Círculo contenedor de icono */
+    .icon-wrapper {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Conectores laterales (Flechas en 'U') */
+    .arrow-connector {
+      position: absolute;
+      width: 60px;
+      height: 106px; /* Altura que cubre desde una caja a la siguiente */
+      border: 5px solid #2b2b2b;
+      z-index: 1;
+    }
+
+    /* Conector a la Izquierda */
+    .arrow-left {
+      left: -60px;
+      border-right: none;
+      border-radius: 12px 0 0 12px;
+    }
+
+    .arrow-left::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      right: -2px;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 12px solid #2b2b2b;
+    }
+
+    /* Conector a la Derecha */
+    .arrow-right {
+      right: -60px;
+      border-left: none;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .arrow-right::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: -2px;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 12px solid #2b2b2b;
+    }
+
+    /* Posicionamiento vertical específico de cada flecha */
+    .conn-1 { top: 38px; }
+    .conn-2 { top: 142px; }
+    .conn-3 { top: 246px; }
+    .conn-4 { top: 350px; }
+    .conn-5 { top: 454px; }
+    .conn-6 { top: 558px; }
+    .conn-7 { top: 662px; }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInArrow {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .animated {
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    .animated-arrow {
+      opacity: 0;
+      animation: fadeInArrow 0.4s ease-out forwards;
+    }
+
+    /* Delays para cascada secuencial */
+    .d-1 { animation-delay: 0.1s; }
+    .d-2 { animation-delay: 0.3s; }
+    .d-3 { animation-delay: 0.5s; }
+    .d-4 { animation-delay: 0.7s; }
+    .d-5 { animation-delay: 0.9s; }
+    .d-6 { animation-delay: 1.1s; }
+    .d-7 { animation-delay: 1.3s; }
+    .d-8 { animation-delay: 1.5s; }
+    .d-9 { animation-delay: 1.7s; }
+    .d-10 { animation-delay: 1.9s; }
+    .d-11 { animation-delay: 2.1s; }
+    .d-12 { animation-delay: 2.3s; }
+    .d-13 { animation-delay: 2.5s; }
+    .d-14 { animation-delay: 2.7s; }
+    .d-15 { animation-delay: 2.9s; }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción -->
+  <p class="instruction-text">Haga clic sobre el botón "▶" para reiniciar la animación</p>
+
+  <!-- Botón ▶ -->
+  <button class="restart-btn" onclick="restartAnimation()">
+    <span>▶</span></button>
+
+  <div class="diagram-container" id="diagram">
+    
+    <!-- Paso 1: Usuario -->
+    <div class="step-box animated d-1">
+      <div class="step-title">Usuario</div>
+      <div class="icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="#4a69bd">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 1 (Izquierda) -->
+    <div class="arrow-connector arrow-left conn-1 animated-arrow d-2"></div>
+
+    <!-- Paso 2: Interfaz de usuario -->
+    <div class="step-box animated d-3">
+      <div class="step-title">Interfaz<br>de usuario</div>
+      <div class="icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2ed573" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 2 (Derecha) -->
+    <div class="arrow-connector arrow-right conn-2 animated-arrow d-4"></div>
+
+    <!-- Paso 3: Aplicación -->
+    <div class="step-box animated d-5">
+      <div class="step-title">Aplicación</div>
+      <div class="icon-wrapper">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff4757" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 3 (Izquierda) -->
+    <div class="arrow-connector arrow-left conn-3 animated-arrow d-6"></div>
+
+    <!-- Paso 4: Consulta SQL -->
+    <div class="step-box animated d-7">
+      <div class="step-title">Consulta<br>SQL</div>
+      <div class="icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1e90ff" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <circle cx="10" cy="13" r="2"/>
+          <path d="m11.5 14.5 2.5 2.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 4 (Derecha) -->
+    <div class="arrow-connector arrow-right conn-4 animated-arrow d-8"></div>
+
+    <!-- Paso 5: Sistema gestor de Bases Datos -->
+    <div class="step-box animated d-9">
+      <div class="step-title">Sistema<br>gestor de<br>Bases Datos</div>
+      <div class="icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#57606f" stroke-width="2">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 5 (Izquierda) -->
+    <div class="arrow-connector arrow-left conn-5 animated-arrow d-10"></div>
+
+    <!-- Paso 6: Resultados -->
+    <div class="step-box animated d-11">
+      <div class="step-title">Resultados</div>
+      <div class="icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffa502" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 6 (Derecha) -->
+    <div class="arrow-connector arrow-right conn-6 animated-arrow d-12"></div>
+
+    <!-- Paso 7: Aplicación -->
+    <div class="step-box animated d-13">
+      <div class="step-title">Aplicación</div>
+      <div class="icon-wrapper">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff4757" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flecha 7 (Izquierda) -->
+    <div class="arrow-connector arrow-left conn-7 animated-arrow d-14"></div>
+
+    <!-- Paso 8: Usuario -->
+    <div class="step-box animated d-15">
+      <div class="step-title">Usuario</div>
+      <div class="icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="#4a69bd">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function restartAnimation() {
+      const diagram = document.getElementById('diagram');
+      // Reemplaza el nodo por una copia clonada para forzar el reinicio de las animaciones CSS
+      const clone = diagram.cloneNode(true);
+      diagram.parentNode.replaceChild(clone, diagram);
+    }
+  </script>
+
+</body>
+</html>
