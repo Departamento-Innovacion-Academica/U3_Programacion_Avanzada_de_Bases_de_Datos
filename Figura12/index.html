@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo de Integración API</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #0d1117;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction-text {
+      color: #e6edf3;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Botón ▶ Reiniciar */
+    .restart-btn {
+      background-color: #1f2937;
+      color: #38bdf8;
+      border: 1px solid #38bdf8;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #38bdf8;
+      color: #0d1117;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.3);
+    }
+
+    .restart-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Contenedor Vertical principal (Tarjeta oscura) */
+    .main-board {
+      background-color: #161b22;
+      border: 2px solid #21262d;
+      border-radius: 24px;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Bloques de proceso */
+    .process-block {
+      background-color: #0d1117;
+      border: 2px solid #22d3ee;
+      border-radius: 50px;
+      width: 100%;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #22d3ee;
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .process-block:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.25);
+    }
+
+    .block-text {
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+      flex: 1;
+      padding: 0 10px;
+    }
+
+    .icon-svg {
+      width: 38px;
+      height: 38px;
+      stroke: #22d3ee;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* Flecha descendente */
+    .arrow-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2px 0;
+    }
+
+    .down-arrow-svg {
+      width: 28px;
+      height: 36px;
+      stroke: #22d3ee;
+      fill: #22d3ee;
+    }
+
+    /* Animación de entrada vertical (Top -> Bottom) */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animated {
+      opacity: 0;
+      animation: fadeInDown 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* Delays de la animación en cascada */
+    .d-1  { animation-delay: 0.10s; }
+    .d-2  { animation-delay: 0.25s; }
+    .d-3  { animation-delay: 0.40s; }
+    .d-4  { animation-delay: 0.55s; }
+    .d-5  { animation-delay: 0.70s; }
+    .d-6  { animation-delay: 0.85s; }
+    .d-7  { animation-delay: 1.00s; }
+    .d-8  { animation-delay: 1.15s; }
+    .d-9  { animation-delay: 1.30s; }
+
+    /* Adaptabilidad */
+    @media (max-width: 480px) {
+      .main-board {
+        padding: 25px 15px;
+      }
+      .block-text {
+        font-size: 15px;
+      }
+      .icon-svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción -->
+  <p class="instruction-text">Haga clic sobre el botón "▶ Reiniciar" para reiniciar la animación</p>
+
+  <!-- Botón ▶ Reiniciar -->
+  <button class="restart-btn" onclick="restartAnimation()">
+    ▶ Reiniciar
+  </button>
+
+  <div class="main-board" id="flowWrapper">
+
+    <!-- Bloque 1: Aplicación -->
+    <div class="process-block animated d-1">
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="3"/>
+        <path d="M9 18h6"/>
+        <path d="M9 6l-2 2 2 2"/>
+        <path d="M15 6l2 2-2 2"/>
+      </svg>
+      <span class="block-text">Aplicación</span>
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="3"/>
+        <path d="M9 18h6"/>
+        <path d="M9 6l-2 2 2 2"/>
+        <path d="M15 6l2 2-2 2"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 1 -->
+    <div class="arrow-container animated d-2">
+      <svg class="down-arrow-svg" viewBox="0 0 24 36">
+        <path d="M12 2 L12 26 M5 20 L12 29 L19 20" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Bloque 2: Solicitud HTTP -->
+    <div class="process-block animated d-3">
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M3.6 9h16.8"/>
+        <path d="M3.6 15h16.8"/>
+        <path d="M11.5 3a17 17 0 0 0 0 18"/>
+        <path d="M12.5 3a17 17 0 0 1 0 18"/>
+        <path d="M14 14l4 4m0-4l-4 4" stroke-width="2"/>
+      </svg>
+      <span class="block-text">Solicitud HTTP</span>
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M3.6 9h16.8"/>
+        <path d="M3.6 15h16.8"/>
+        <path d="M11.5 3a17 17 0 0 0 0 18"/>
+        <path d="M12.5 3a17 17 0 0 1 0 18"/>
+        <path d="M14 14l4 4m0-4l-4 4" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 2 -->
+    <div class="arrow-container animated d-4">
+      <svg class="down-arrow-svg" viewBox="0 0 24 36">
+        <path d="M12 2 L12 26 M5 20 L12 29 L19 20" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Bloque 3: API Externa -->
+    <div class="process-block animated d-5">
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 16.5A4.5 4.5 0 0 1 6.5 7.6 6 6 0 0 1 17 8a4.5 4.5 0 0 1 1 8.9"/>
+        <rect x="8" y="13" width="8" height="8" rx="1.5"/>
+        <line x1="10" y1="16" x2="14" y2="16"/>
+        <line x1="10" y1="18" x2="12" y2="18"/>
+      </svg>
+      <span class="block-text">API Externa</span>
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 16.5A4.5 4.5 0 0 1 6.5 7.6 6 6 0 0 1 17 8a4.5 4.5 0 0 1 1 8.9"/>
+        <rect x="8" y="13" width="8" height="8" rx="1.5"/>
+        <line x1="10" y1="16" x2="14" y2="16"/>
+        <line x1="10" y1="18" x2="12" y2="18"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 3 -->
+    <div class="arrow-container animated d-6">
+      <svg class="down-arrow-svg" viewBox="0 0 24 36">
+        <path d="M12 2 L12 26 M5 20 L12 29 L19 20" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Bloque 4: Respuesta JSON -->
+    <div class="process-block animated d-7">
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="12" rx="2"/>
+        <path d="M8 20h8"/>
+        <path d="M12 16v4"/>
+        <path d="M8 9l-2 2 2 2"/>
+        <path d="M16 9l2 2-2 2"/>
+      </svg>
+      <span class="block-text">Respuesta JSON</span>
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="12" rx="2"/>
+        <path d="M8 20h8"/>
+        <path d="M12 16v4"/>
+        <path d="M8 9l-2 2 2 2"/>
+        <path d="M16 9l2 2-2 2"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 4 -->
+    <div class="arrow-container animated d-8">
+      <svg class="down-arrow-svg" viewBox="0 0 24 36">
+        <path d="M12 2 L12 26 M5 20 L12 29 L19 20" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Bloque 5: Aplicación procesa datos -->
+    <div class="process-block animated d-9">
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="5" width="14" height="14" rx="2"/>
+        <rect x="9" y="9" width="6" height="6"/>
+        <path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>
+      </svg>
+      <span class="block-text">Aplicación procesa datos</span>
+      <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="5" width="14" height="14" rx="2"/>
+        <rect x="9" y="9" width="6" height="6"/>
+        <path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <script>
+    function restartAnimation() {
+      const wrapper = document.getElementById('flowWrapper');
+      const clone = wrapper.cloneNode(true);
+      wrapper.parentNode.replaceChild(clone, wrapper);
+    }
+  </script>
+
+</body>
+</html>
