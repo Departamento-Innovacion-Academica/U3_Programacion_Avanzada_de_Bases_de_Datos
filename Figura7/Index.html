@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo de Procesamiento de Consulta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #2b2b2b;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction-text {
+      color: #e0e0e0;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Botón ▶ Reiniciar */
+    .restart-btn {
+      background-color: #ffffff;
+      color: #2b2b2b;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .restart-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Contenedor principal del diagrama */
+    .diagram-container {
+      background-color: #383838;
+      border: 1px solid #4a4a4a;
+      border-radius: 20px;
+      padding: 35px 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Cajas del flujo */
+    .flow-box {
+      background-color: #383838;
+      border: 2px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .flow-box:hover {
+      transform: scale(1.02);
+      border-color: #ffffff;
+    }
+
+    .box-text {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* Flechas con efecto de dibujo */
+    .arrow-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .sketch-arrow {
+      width: 24px;
+      height: 38px;
+      stroke: #d0d0d0;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animated {
+      opacity: 0;
+      animation: fadeInUp 0.4s ease-out forwards;
+    }
+
+    /* Tiempos de retraso para la secuencia descendente */
+    .d-1 { animation-delay: 0.1s; }
+    .d-2 { animation-delay: 0.25s; }
+    .d-3 { animation-delay: 0.4s; }
+    .d-4 { animation-delay: 0.55s; }
+    .d-5 { animation-delay: 0.7s; }
+    .d-6 { animation-delay: 0.85s; }
+    .d-7 { animation-delay: 1.0s; }
+    .d-8 { animation-delay: 1.15s; }
+    .d-9 { animation-delay: 1.3s; }
+    .d-10 { animation-delay: 1.45s; }
+    .d-11 { animation-delay: 1.6s; }
+
+    /* Adaptabilidad a dispositivos pequeños */
+    @media (max-width: 480px) {
+      .diagram-container {
+        padding: 25px 15px;
+      }
+      .box-text {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción -->
+  <p class="instruction-text">Haga clic sobre el botón "▶ Reiniciar" para reiniciar la animación</p>
+
+  <!-- Botón ▶ Reiniciar -->
+  <button class="restart-btn" onclick="restartAnimation()">
+    ▶ Reiniciar
+  </button>
+
+  <div class="diagram-container" id="diagramWrapper">
+
+    <!-- Paso 1: Aplicación -->
+    <div class="flow-box animated d-1" style="max-width: 220px;">
+      <span class="box-text">Aplicación</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+        <rect x="3" y="4" width="18" height="12" rx="2"/>
+        <circle cx="12" cy="10" r="3"/>
+        <path d="M7 20h10"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 1 -->
+    <div class="arrow-container animated d-2">
+      <svg class="sketch-arrow" viewBox="0 0 24 40">
+        <path d="M12,2 C11,10 13,20 12,32 M6,26 C9,30 11,34 12,35 C13,34 15,30 18,26"/>
+      </svg>
+    </div>
+
+    <!-- Paso 2: Consulta SQL -->
+    <div class="flow-box animated d-3" style="max-width: 260px;">
+      <span class="box-text">Consulta SQL</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+        <path d="M4 6h16M4 12h16M4 18h10"/>
+        <polyline points="16 16 19 19 22 16"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 2 -->
+    <div class="arrow-container animated d-4">
+      <svg class="sketch-arrow" viewBox="0 0 24 40">
+        <path d="M12,2 C13,8 11,18 12,32 M6,26 C8,29 11,33 12,35 C13,33 16,29 18,26"/>
+      </svg>
+    </div>
+
+    <!-- Paso 3: Driver o librería de acceso a datos -->
+    <div class="flow-box animated d-5">
+      <span class="box-text">Driver o librería de acceso a datos</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 3 -->
+    <div class="arrow-container animated d-6">
+      <svg class="sketch-arrow" viewBox="0 0 24 40">
+        <path d="M12,2 C11,12 13,22 12,32 M6,26 C9,29 11,32 12,35 C13,32 15,29 18,26"/>
+      </svg>
+    </div>
+
+    <!-- Paso 4: Sistema gestor de bases de datos -->
+    <div class="flow-box animated d-7">
+      <span class="box-text">Sistema gestor de bases de datos</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+        <ellipse cx="12" cy="6" rx="8" ry="3"/>
+        <path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/>
+        <path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 4 -->
+    <div class="arrow-container animated d-8">
+      <svg class="sketch-arrow" viewBox="0 0 24 40">
+        <path d="M12,2 C13,10 11,20 12,32 M6,26 C8,29 11,33 12,35 C13,33 16,29 18,26"/>
+      </svg>
+    </div>
+
+    <!-- Paso 5: Resultados de la consulta -->
+    <div class="flow-box animated d-9" style="max-width: 330px;">
+      <span class="box-text">Resultados de la consulta</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <line x1="11" y1="8" x2="11" y2="14"/>
+        <line x1="8" y1="11" x2="14" y2="11"/>
+      </svg>
+    </div>
+
+    <!-- Flecha 5 -->
+    <div class="arrow-container animated d-10">
+      <svg class="sketch-arrow" viewBox="0 0 24 40">
+        <path d="M12,2 C11,9 13,19 12,32 M6,26 C9,29 11,32 12,35 C13,32 15,29 18,26"/>
+      </svg>
+    </div>
+
+    <!-- Paso 6: Aplicación procesa los resultados -->
+    <div class="flow-box animated d-11">
+      <span class="box-text">Aplicación procesa los resultados</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 8v4l3 3"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <script>
+    function restartAnimation() {
+      const wrapper = document.getElementById('diagramWrapper');
+      const clone = wrapper.cloneNode(true);
+      wrapper.parentNode.replaceChild(clone, wrapper);
+    }
+  </script>
+
+</body>
+</html>
