@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo API REST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f4f5f7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction-text {
+      color: #333333;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Botón ▶ Reiniciar */
+    .restart-btn {
+      background-color: #212832;
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #343a40;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .restart-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Contenedor Horizontal */
+    .flow-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 1050px;
+      flex-wrap: nowrap;
+    }
+
+    /* Círculo principal */
+    .circle-card {
+      background-color: #525252;
+      border-radius: 50%;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 25px 20px;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .circle-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Icono SVG dentro del círculo */
+    .icon-svg {
+      width: 65px;
+      height: 65px;
+      margin-bottom: 8px;
+    }
+
+    /* Texto dentro del círculo */
+    .circle-title {
+      font-size: 17px;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* Flecha Separadora curva / apuntada */
+    .arrow-separator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .arrow-svg {
+      width: 28px;
+      height: 48px;
+      fill: #525252;
+    }
+
+    /* Animación de entrada de izquierda a derecha */
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .animated {
+      opacity: 0;
+      animation: fadeInRight 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* Tiempos de retraso en secuencia */
+    .d-1 { animation-delay: 0.1s; }
+    .d-2 { animation-delay: 0.25s; }
+    .d-3 { animation-delay: 0.4s; }
+    .d-4 { animation-delay: 0.55s; }
+    .d-5 { animation-delay: 0.7s; }
+    .d-6 { animation-delay: 0.85s; }
+    .d-7 { animation-delay: 1.0s; }
+
+    /* Adaptabilidad Móvil */
+    @media (max-width: 900px) {
+      .flow-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .arrow-svg {
+        transform: rotate(90deg);
+      }
+      .circle-card {
+        width: 200px;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción -->
+  <p class="instruction-text">Haga clic sobre el botón "▶ Reiniciar" para reiniciar la animación</p>
+
+  <!-- Botón ▶ Reiniciar -->
+  <button class="restart-btn" onclick="restartAnimation()">
+    ▶ Reiniciar
+  </button>
+
+  <div class="flow-container" id="flowWrapper">
+
+    <!-- Nodo 1: Cliente HTTP -->
+    <div class="circle-card animated d-1">
+      <svg class="icon-svg" viewBox="0 0 100 100" fill="none" stroke="#ffffff">
+        <text x="50" y="42" fill="#ffffff" font-size="20" font-weight="700" text-anchor="middle" font-family="'Poppins', sans-serif">http://</text>
+        <!-- Puntero del mouse -->
+        <path d="M52 48 L52 74 L60 66 L68 78 L74 74 L66 62 L76 60 Z" fill="#ffffff" stroke="#525252" stroke-width="2"/>
+      </svg>
+      <div class="circle-title">Cliente HTTP</div>
+    </div>
+
+    <!-- Flecha 1 -->
+    <div class="arrow-separator animated d-2">
+      <svg class="arrow-svg" viewBox="0 0 30 50">
+        <path d="M 2 5 C 18 20, 18 30, 2 45 L 26 25 Z"/>
+      </svg>
+    </div>
+
+    <!-- Nodo 2: API REST -->
+    <div class="circle-card animated d-3">
+      <svg class="icon-svg" viewBox="0 0 100 100" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Nube superior -->
+        <path d="M38 28 A8 8 0 0 1 52 20 A10 10 0 0 1 68 26 A7 7 0 0 1 66 38 L36 38 A8 8 0 0 1 38 28 Z"/>
+        <!-- Flechas arriba/abajo -->
+        <path d="M44 42 L44 54 M44 42 L40 46 M44 42 L48 46"/>
+        <path d="M56 54 L56 42 M56 54 L52 50 M56 54 L60 50"/>
+        <!-- Laptop / Servidor -->
+        <rect x="26" y="58" width="48" height="22" rx="3"/>
+        <line x1="32" y1="65" x2="42" y2="65"/>
+        <line x1="32" y1="71" x2="38" y2="71"/>
+        <rect x="52" y="64" width="16" height="10" rx="1"/>
+        <path d="M20 84 L80 84"/>
+      </svg>
+      <div class="circle-title">API REST</div>
+    </div>
+
+    <!-- Flecha 2 -->
+    <div class="arrow-separator animated d-4">
+      <svg class="arrow-svg" viewBox="0 0 30 50">
+        <path d="M 2 5 C 18 20, 18 30, 2 45 L 26 25 Z"/>
+      </svg>
+    </div>
+
+    <!-- Nodo 3: Servicio de acceso a datos -->
+    <div class="circle-card animated d-5">
+      <svg class="icon-svg" viewBox="0 0 100 100" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Candado -->
+        <rect x="30" y="32" width="34" height="28" rx="4" stroke-width="3"/>
+        <path d="M38 32 V24 A9 9 0 0 1 56 24 V32" stroke-width="3"/>
+        <circle cx="47" cy="46" r="3" fill="#ffffff"/>
+        <!-- Checkmark badge -->
+        <circle cx="70" cy="42" r="11" fill="#525252" stroke="#ffffff" stroke-width="3"/>
+        <path d="M64 42 L68 46 L76 38" stroke="#ffffff" stroke-width="3"/>
+        <!-- Mano / Puntero tocando -->
+        <path d="M42 66 L42 54 C42 52 45 52 45 54 L45 74" stroke-width="3"/>
+        <path d="M45 60 C45 58 48 58 48 60 L48 74" stroke-width="3"/>
+        <path d="M48 62 C48 60 51 60 51 62 L51 74" stroke-width="3"/>
+        <path d="M36 64 L36 70 C36 78 45 84 55 84 L60 84 C66 84 68 78 68 72 L68 64 L51 64" stroke-width="3"/>
+        <line x1="36" y1="84" x2="68" y2="84" stroke-width="3"/>
+      </svg>
+      <div class="circle-title">Servicio de<br>acceso<br>a datos</div>
+    </div>
+
+    <!-- Flecha 3 -->
+    <div class="arrow-separator animated d-6">
+      <svg class="arrow-svg" viewBox="0 0 30 50">
+        <path d="M 2 5 C 18 20, 18 30, 2 45 L 26 25 Z"/>
+      </svg>
+    </div>
+
+    <!-- Nodo 4: Base de Datos -->
+    <div class="circle-card animated d-7">
+      <svg class="icon-svg" viewBox="0 0 100 100" fill="none" stroke="#ffffff" stroke-width="3">
+        <!-- Cilindros Base de Datos -->
+        <ellipse cx="44" cy="28" rx="22" ry="8"/>
+        <path d="M22 28 v14 c0 4.4 9.8 8 22 8 s22-3.6 22-8 v-14"/>
+        <path d="M22 42 v14 c0 4.4 9.8 8 22 8 s22-3.6 22-8 v-14"/>
+        <path d="M22 56 v14 c0 4.4 9.8 8 22 8 s22-3.6 22-8 v-14"/>
+        <!-- Badge Checkmark -->
+        <circle cx="70" cy="58" r="14" fill="#525252" stroke="#ffffff" stroke-width="3"/>
+        <path d="M63 58 L68 63 L77 53" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="circle-title">Base de Datos</div>
+    </div>
+
+  </div>
+
+  <script>
+    function restartAnimation() {
+      const wrapper = document.getElementById('flowWrapper');
+      const clone = wrapper.cloneNode(true);
+      wrapper.parentNode.replaceChild(clone, wrapper);
+    }
+  </script>
+
+</body>
+</html>
