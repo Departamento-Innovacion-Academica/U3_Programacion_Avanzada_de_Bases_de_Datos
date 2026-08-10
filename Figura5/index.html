@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo de Conexión a Base de Datos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f4f5f7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction-text {
+      color: #333333;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Botón de reinicio */
+    .restart-btn {
+      background-color: #212832;
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #343a40;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .restart-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Título del Diagrama */
+    .main-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: #000000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    /* Contenedor del Flujo Escalonado */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 850px;
+      padding-left: 20px;
+    }
+
+    /* Cada fila / paso */
+    .step-row {
+      display: flex;
+      align-items: center;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    /* Desplazamiento en diagonal hacia la derecha */
+    .step-1 { transform: translateX(0px); }
+    .step-2 { transform: translateX(80px); }
+    .step-3 { transform: translateX(160px); }
+    .step-4 { transform: translateX(240px); }
+
+    .step-row:hover {
+      filter: brightness(1.03);
+    }
+
+    /* Insignia de número (Círculo con número dentro) */
+    .number-badge {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .circle-number {
+      font-size: 52px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* Píldora contenedora de texto */
+    .pill-content {
+      height: 70px;
+      padding: 0 40px 0 30px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.2;
+      text-align: center;
+      margin-left: -15px; /* Solapamiento con la insignia */
+      box-shadow: 4px 8px 15px rgba(0, 0, 0, 0.25);
+      z-index: 1;
+      white-space: nowrap;
+    }
+
+    /* Esquema de Colores */
+
+    /* Paso 1: Púrpura */
+    .step-1 .circle { background-color: #8e1bbd; }
+    .step-1 .pill-content { background-color: #8e1bbd; }
+
+    /* Paso 2: Azul Claro / Turquesa */
+    .step-2 .circle { background-color: #499bbd; }
+    .step-2 .pill-content { background-color: #499bbd; }
+
+    /* Paso 3: Azul Oscuro */
+    .step-3 .circle { background-color: #0d5c8a; }
+    .step-3 .pill-content { background-color: #0d5c8a; }
+
+    /* Paso 4: Rojo Carmín */
+    .step-4 .circle { background-color: #c41851; }
+    .step-4 .pill-content { background-color: #c41851; text-align: left; }
+
+    /* Animaciones */
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(-40px);
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animated {
+      opacity: 0;
+      animation: slideInRight 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    .animated-title {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .d-0 { animation-delay: 0.0s; }
+    .d-1 { animation-delay: 0.2s; }
+    .d-2 { animation-delay: 0.4s; }
+    .d-3 { animation-delay: 0.6s; }
+    .d-4 { animation-delay: 0.8s; }
+
+    /* Adaptabilidad a dispositivos móviles */
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 20px;
+        margin-bottom: 25px;
+      }
+      .flow-container {
+        padding-left: 0;
+      }
+      .step-1, .step-2, .step-3, .step-4 {
+        transform: translateX(0) !important;
+      }
+      .pill-content {
+        font-size: 15px;
+        padding: 0 20px 0 25px;
+        white-space: normal;
+        height: auto;
+        min-height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción -->
+  <p class="instruction-text">Haga clic sobre el botón "▶ Reiniciar" para reiniciar la animación</p>
+
+  <!-- Botón ▶ Reiniciar -->
+  <button class="restart-btn" onclick="restartAnimation()">
+    ▶ Reiniciar
+  </button>
+
+  <div id="flowWrapper">
+    <!-- Título Principal -->
+    <h1 class="main-title animated-title d-0">FLUJO DE CONEXIÓN A BASE DE DATOS</h1>
+
+    <!-- Contenedor del Flujo -->
+    <div class="flow-container">
+
+      <!-- Paso 1 -->
+      <div class="step-row step-1 animated d-1">
+        <div class="number-badge">
+          <div class="circle">
+            <span class="circle-number">1</span>
+          </div>
+        </div>
+        <div class="pill-content">
+          Aplicación solicita conexión
+        </div>
+      </div>
+
+      <!-- Paso 2 -->
+      <div class="step-row step-2 animated d-2">
+        <div class="number-badge">
+          <div class="circle">
+            <span class="circle-number">2</span>
+          </div>
+        </div>
+        <div class="pill-content">
+          Creación de conexión
+        </div>
+      </div>
+
+      <!-- Paso 3 -->
+      <div class="step-row step-3 animated d-3">
+        <div class="number-badge">
+          <div class="circle">
+            <span class="circle-number">3</span>
+          </div>
+        </div>
+        <div class="pill-content">
+          Ejecución de consultas SQL
+        </div>
+      </div>
+
+      <!-- Paso 4 -->
+      <div class="step-row step-4 animated d-4">
+        <div class="number-badge">
+          <div class="circle">
+            <span class="circle-number">4</span>
+          </div>
+        </div>
+        <div class="pill-content">
+          Procesamiento de resultados<br>y liberación de conexión
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function restartAnimation() {
+      const wrapper = document.getElementById('flowWrapper');
+      const clone = wrapper.cloneNode(true);
+      wrapper.parentNode.replaceChild(clone, wrapper);
+    }
+  </script>
+
+</body>
+</html>
